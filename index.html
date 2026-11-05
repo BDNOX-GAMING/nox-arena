@@ -6,18 +6,62 @@
 <meta name="theme-color" content="#100b20">
 <title>NOX ARENA | Tournament</title>
 <style>
-:root{--bg:#0b0815;--panel:#171126;--panel2:#211735;--line:#35264d;--text:#f7f2ff;--muted:#b8a9ca;--pink:#ef4ca8;--violet:#8b5cf6;--gold:#ffd166;--green:#45d483}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#38204e 0,transparent 38%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif}
-header{padding:20px 16px 14px;max-width:900px;margin:auto}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--violet));display:grid;place-items:center;font-weight:900;font-size:21px;box-shadow:0 8px 30px #a33c9a55}.brand h1{font-size:21px;letter-spacing:1.5px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
-main{max-width:900px;margin:auto;padding:0 16px 100px}.hero{padding:24px 20px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(130deg,#29183c,#171126 65%);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:#a33c9a22;right:-45px;top:-50px}.eyebrow{color:#f5a6d7;font-size:12px;font-weight:800;letter-spacing:2px}.hero h2{font-size:30px;line-height:1.15;margin:10px 0}.hero p{color:var(--muted);max-width:530px;font-size:14px;line-height:1.6}.btn{border:0;border-radius:12px;padding:12px 16px;background:linear-gradient(100deg,var(--pink),var(--violet));color:white;font-weight:800;font-size:14px;cursor:pointer}.section-title{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px}.section-title h3{margin:0;font-size:18px}.muted{color:var(--muted);font-size:12px}.notice{margin-top:16px;padding:14px;border-radius:15px;background:#1b1730;border:1px solid #51406a;font-size:13px;line-height:1.7}.notice strong{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px}.tag{display:inline-block;font-size:11px;font-weight:800;padding:5px 9px;border-radius:20px;background:#38204e;color:#f6a9db}.card h4{font-size:17px;margin:12px 0 6px}.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}.meta{display:flex;justify-content:space-between;margin-top:15px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.price{color:var(--gold);font-weight:800}.tabs{position:fixed;bottom:0;left:0;right:0;background:#120d20ee;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:8px;padding:10px 8px calc(10px + env(safe-area-inset-bottom));z-index:5}.tabs button{background:transparent;color:var(--muted);border:0;padding:8px 13px;border-radius:10px;font-size:12px}.tabs button.active{background:#38204e;color:white}.panel{display:none}.panel.active{display:block}.wallet-balance{font-size:30px;font-weight:900;margin:8px 0;color:var(--gold)}.field{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#100b1b;color:white;margin:7px 0 12px}.small{font-size:11px;color:var(--muted);line-height:1.6}footer{text-align:center;color:#847795;font-size:11px;padding:24px}
+:root{--bg:#0b0815;--panel:#171126;--line:#35264d;--text:#f7f2ff;--muted:#b8a9ca;--pink:#ef4ca8;--violet:#8b5cf6;--gold:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 80% -10%,#38204e 0,transparent 38%),var(--bg);color:var(--text);font-family:system-ui,sans-serif}
+header{padding:20px 16px 14px;max-width:900px;margin:auto}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--violet));display:grid;place-items:center;font-weight:900;font-size:21px}
+.brand h1{font-size:21px;margin:0}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+main{max-width:900px;margin:auto;padding:0 16px 100px}
+.hero{padding:24px 20px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(130deg,#29183c,#171126 65%)}
+.eyebrow{color:#f5a6d7;font-size:12px;font-weight:800;letter-spacing:2px}
+.hero h2{font-size:30px;line-height:1.15;margin:10px 0}
+.hero p,.card p{color:var(--muted);font-size:13px;line-height:1.6}
+.btn{border:0;border-radius:12px;padding:12px 16px;background:linear-gradient(100deg,var(--pink),var(--violet));color:white;font-weight:800;font-size:14px;cursor:pointer;margin:4px 2px}
+.section-title{display:flex;justify-content:space-between;margin:24px 2px 12px}
+.section-title h3{margin:0;font-size:18px}
+.muted{color:var(--muted);font-size:12px}
+.notice{margin-top:16px;padding:14px;border-radius:15px;background:#1b1730;border:1px solid #51406a;font-size:13px;line-height:1.7}
+.notice strong{color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:5px 9px;border-radius:20px;background:#38204e;color:#f6a9db}
+.card h4{font-size:17px;margin:12px 0 6px}
+.meta{display:flex;justify-content:space-between;margin-top:15px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.price{color:var(--gold);font-weight:800}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#120d20ee;border-top:1px solid var(--line);display:flex;justify-content:center;gap:8px;padding:10px 8px calc(10px + env(safe-area-inset-bottom));z-index:5}
+.tabs button{background:transparent;color:var(--muted);border:0;padding:8px 13px;border-radius:10px;font-size:12px}
+.tabs button.active{background:#38204e;color:white}
+.panel{display:none}
+.panel.active{display:block}
+.wallet-balance{font-size:30px;font-weight:900;margin:8px 0;color:var(--gold)}
+.field{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#100b1b;color:white;margin:7px 0 12px}
+.small{font-size:11px;color:var(--muted);line-height:1.6}
+footer{text-align:center;color:#847795;font-size:11px;padding:24px}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="logo">N</div><div><h1>NOX ARENA</h1><p>PLAY • FIGHT • WIN</p></div></div></header>
+
+<header>
+<div class="brand">
+<div class="logo">N</div>
+<div><h1>NOX ARENA</h1><p>PLAY • FIGHT • WIN</p></div>
+</div>
+</header>
+
 <main>
 <section id="home" class="panel active">
-<div class="hero"><div class="eyebrow">WELCOME TO THE BATTLE</div><h2>আপনার পরবর্তী<br>জয় শুরু হোক এখানে!</h2><p>NOX ARENA-তে টুর্নামেন্ট দেখুন, ম্যাচে অংশ নিন এবং আপনার গেমিং দক্ষতা দেখান।</p><button class="btn" onclick="showPanel('matches')">টুর্নামেন্ট দেখুন</button></div>
-<div class="notice"><strong>ওয়ালেট নোটিশ</strong><br>ডিপোজিট ও উইথড্র আবেদন যাচাই সম্পন্ন হলে সাধারণত ১০–১৫ মিনিটের মধ্যে প্রক্রিয়া করা হবে। সময় যাচাই ও পেমেন্টের ওপর নির্ভরশীল।</div>
+<div class="hero">
+<div class="eyebrow">WELCOME TO THE BATTLE</div>
+<h2>আপনার পরবর্তী<br>জয় শুরু হোক এখানে!</h2>
+<p>NOX ARENA-তে টুর্নামেন্ট দেখুন, ম্যাচে অংশ নিন এবং আপনার গেমিং দক্ষতা দেখান।</p>
+<button class="btn" onclick="showPanel('matches')">টুর্নামেন্ট দেখুন</button>
+</div>
+
+<div class="notice"><strong>ওয়ালেট নোটিশ</strong><br>ডিপোজিট ও উইথড্র আবেদন যাচাই সম্পন্ন হলে সাধারণত ১০–১৫ মিনিটের মধ্যে প্রক্রিয়া করা হবে।</div>
+
 <div class="section-title"><h3>চলমান টুর্নামেন্ট</h3><span class="muted">NOX ARENA</span></div>
 <div class="grid">
 <div class="card"><span class="tag">FREE TOURNAMENT</span><h4>Weekly Tournament</h4><p>সাপ্তাহিক ফ্রি ম্যাচে অংশ নিন এবং পুরস্কার জেতার সুযোগ নিন।</p><div class="meta"><span>Entry Fee</span><span class="price">৳০</span></div></div>
@@ -25,14 +69,168 @@ main{max-width:900px;margin:auto;padding:0 16px 100px}.hero{padding:24px 20px;bo
 <div class="card"><span class="tag">BR RANK</span><h4>BR Rank Match</h4><p>BR Rank ম্যাচের পোস্ট ও রুমের তথ্য এখানে প্রকাশ করা হবে।</p><div class="meta"><span>Room Details</span><span>প্রকাশের অপেক্ষায়</span></div></div>
 </div>
 </section>
-<section id="matches" class="panel"><div class="section-title"><h3>টুর্নামেন্ট ও ম্যাচ</h3></div><div class="grid"><div class="card"><span class="tag">WEEKLY</span><h4>Weekly Tournament</h4><p>১ম পুরস্কার: Weekly<br>২য় পুরস্কার: Weekly Lite<br>৩য় পুরস্কার: ৫০ ডায়মন্ড</p><div class="meta"><span>Entry Fee</span><span class="price">৳০</span></div></div><div class="card"><span class="tag">BR RANK</span><h4>BR Rank</h4><p>ম্যাচের সময় ও Room ID/Password Admin প্রকাশ করলে এখানে দেখানো হবে।</p></div><div class="card"><span class="tag">CUSTOM</span><h4>Custom Match</h4><p>ম্যাচের সময় ও Room ID/Password Admin প্রকাশ করলে এখানে দেখানো হবে।</p></div></div><p class="small">এটি প্রাথমিক ডিজাইন। লাইভ ম্যাচ, রুমের তথ্য এবং এন্ট্রি ফি চালু করতে নিরাপদ সার্ভার ও Admin Panel সংযুক্ত করতে হবে।</p></section>
-<section id="wallet" class="panel"><div class="section-title"><h3>আমার Wallet</h3></div><div class="card"><div class="muted">বর্তমান ব্যালেন্স</div><div class="wallet-balance">৳০.০০</div><p class="small">এটি শুধু ডিজাইন প্রিভিউ। লগইন ও নিরাপদ Wallet backend চালু না হওয়া পর্যন্ত এখানে বাস্তব টাকা জমা বা উত্তোলন হবে না।</p></div><div class="notice"><strong>ডিপোজিটের নিয়ম</strong><br>সর্বনিম্ন ৳১০০ • সর্বোচ্চ ব্যালেন্স ৳১,০০০<br>Transaction ID দিয়ে আবেদন করুন। Owner যাচাই করে অনুমোদন করবেন।</div><div class="notice"><strong>উইথড্রের নিয়ম</strong><br>সর্বনিম্ন ৳৮০। আবেদন Owner যাচাই করে পেমেন্ট সম্পন্ন করবেন।</div></section>
-<section id="account" class="panel"><div class="section-title"><h3>অ্যাকাউন্ট</h3></div><div class="card"><h4>সদস্য লগইন</h4><label class="small">মোবাইল নম্বর</label><input class="field" placeholder="আপনার মোবাইল নম্বর" inputmode="tel"><label class="small">পাসওয়ার্ড</label><input class="field" placeholder="পাসওয়ার্ড" type="password"><button class="btn" onclick="alert('লগইন সুবিধা চালু করতে নিরাপদ Authentication backend প্রয়োজন।')">লগইন</button><p class="small">এখনো অ্যাকাউন্ট তৈরি বা লগইন করা যাবে না। নিরাপদ Authentication সংযুক্তির পর চালু হবে।</p></div></section>
-<section id="more" class="panel"><div class="section-title"><h3>আরও তথ্য</h3></div><div class="card"><h4>NOX ARENA</h4><p>টুর্নামেন্টের আপডেট, নিয়ম ও যোগাযোগের তথ্য এখানে যোগ করা হবে।</p></div></section>
+
+<section id="matches" class="panel">
+<div class="section-title"><h3>টুর্নামেন্ট ও ম্যাচ</h3></div>
+<div class="grid">
+<div class="card"><span class="tag">WEEKLY</span><h4>Weekly Tournament</h4><p>১ম পুরস্কার: Weekly<br>২য় পুরস্কার: Weekly Lite<br>৩য় পুরস্কার: ৫০ ডায়মন্ড</p><div class="meta"><span>Entry Fee</span><span class="price">৳০</span></div></div>
+<div class="card"><span class="tag">BR RANK</span><h4>BR Rank</h4><p>ম্যাচের সময় ও Room ID/Password Admin প্রকাশ করলে এখানে দেখানো হবে।</p></div>
+<div class="card"><span class="tag">CUSTOM</span><h4>Custom Match</h4><p>ম্যাচের সময় ও Room ID/Password Admin প্রকাশ করলে এখানে দেখানো হবে।</p></div>
+</div>
+<p class="small">লাইভ ম্যাচ ও রুমের তথ্য চালু করতে নিরাপদ সার্ভার ও Admin Panel লাগবে।</p>
+</section>
+
+<section id="wallet" class="panel">
+<div class="section-title"><h3>আমার Wallet</h3></div>
+<div class="card">
+<div class="muted">বর্তমান ব্যালেন্স</div>
+<div class="wallet-balance">৳০.০০</div>
+<p class="small">নিরাপদ Wallet backend চালু না হওয়া পর্যন্ত এখানে বাস্তব টাকা জমা বা উত্তোলন হবে না।</p>
+</div>
+<div class="notice"><strong>ডিপোজিটের নিয়ম</strong><br>সর্বনিম্ন ৳১০০ • সর্বোচ্চ ব্যালেন্স ৳১,০০০<br>Transaction ID দিয়ে আবেদন করুন। Owner যাচাই করবেন।</div>
+<div class="notice"><strong>উইথড্রের নিয়ম</strong><br>সর্বনিম্ন ৳৮০। Owner যাচাই করে পেমেন্ট সম্পন্ন করবেন।</div>
+</section>
+
+<section id="account" class="panel">
+<div class="section-title"><h3>অ্যাকাউন্ট</h3></div>
+<div class="card">
+<h4>সদস্য লগইন / রেজিস্ট্রেশন</h4>
+<label class="small">ইমেইল ঠিকানা</label>
+<input id="authEmail" class="field" type="email" placeholder="আপনার ইমেইল" autocomplete="email">
+<label class="small">পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label>
+<input id="authPassword" class="field" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+<button class="btn" id="loginBtn">লগইন</button>
+<button class="btn" id="registerBtn">নতুন অ্যাকাউন্ট খুলুন</button>
+<button class="btn" id="logoutBtn" style="display:none">লগআউট</button>
+<p id="authStatus" class="small">ইমেইল দিয়ে লগইন করুন অথবা নতুন অ্যাকাউন্ট খুলুন।</p>
+</div>
+</section>
+
+<section id="more" class="panel">
+<div class="section-title"><h3>আরও তথ্য</h3></div>
+<div class="card"><h4>NOX ARENA</h4><p>টুর্নামেন্টের আপডেট, নিয়ম ও যোগাযোগের তথ্য এখানে যোগ করা হবে।</p></div>
+</section>
+
 <footer>© 2026 NOX ARENA • Tournament Website</footer>
 </main>
-<nav class="tabs"><button class="active" onclick="showPanel('home',this)">হোম</button><button onclick="showPanel('matches',this)">ম্যাচ</button><button onclick="showPanel('wallet',this)">Wallet</button><button onclick="showPanel('account',this)">অ্যাকাউন্ট</button><button onclick="showPanel('more',this)">আরও</button></nav>
+
+<nav class="tabs">
+<button class="active" onclick="showPanel('home',this)">হোম</button>
+<button onclick="showPanel('matches',this)">ম্যাচ</button>
+<button onclick="showPanel('wallet',this)">Wallet</button>
+<button onclick="showPanel('account',this)">অ্যাকাউন্ট</button>
+<button onclick="showPanel('more',this)">আরও</button>
+</nav>
+
 <script>
-function showPanel(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const names=['home','matches','wallet','account','more'];document.querySelectorAll('.tabs button')[names.indexOf(id)].classList.add('active')}window.scrollTo(0,0)}
+function showPanel(id,btn){
+document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+if(btn)btn.classList.add('active');
+else{
+const names=['home','matches','wallet','account','more'];
+document.querySelectorAll('.tabs button')[names.indexOf(id)].classList.add('active');
+}
+window.scrollTo(0,0);
+}
 </script>
-</body></html>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDhAs-4klHl9vsp2PwrddIuJ9sjvt4Zk9w",
+authDomain: "bd-nox-esports.firebaseapp.com",
+projectId: "bd-nox-esports",
+storageBucket: "bd-nox-esports.firebasestorage.app",
+messagingSenderId: "166332333423",
+appId: "1:166332333423:web:bfc9cbf77323d338b47c9a",
+measurementId: "G-CP8JVKGD91"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const email = document.getElementById("authEmail");
+const password = document.getElementById("authPassword");
+const statusBox = document.getElementById("authStatus");
+const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+function message(text){statusBox.textContent=text;}
+
+function errorMessage(error){
+const messages={
+"auth/email-already-in-use":"এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে। লগইন করুন।",
+"auth/invalid-email":"সঠিক ইমেইল ঠিকানা লিখুন।",
+"auth/weak-password":"পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।",
+"auth/invalid-credential":"ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।",
+"auth/too-many-requests":"অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে চেষ্টা করুন।",
+"auth/network-request-failed":"ইন্টারনেট সংযোগ পরীক্ষা করুন।"
+};
+return messages[error.code] || "সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+}
+
+registerBtn.addEventListener("click",async()=>{
+const e=email.value.trim();
+const p=password.value;
+if(!e||!p)return message("ইমেইল ও পাসওয়ার্ড লিখুন।");
+if(p.length<6)return message("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+registerBtn.disabled=true;
+try{
+await createUserWithEmailAndPassword(auth,e,p);
+message("অ্যাকাউন্ট তৈরি হয়েছে। আপনি লগইন করেছেন।");
+}catch(error){message(errorMessage(error));}
+finally{registerBtn.disabled=false;}
+});
+
+loginBtn.addEventListener("click",async()=>{
+const e=email.value.trim();
+const p=password.value;
+if(!e||!p)return message("ইমেইল ও পাসওয়ার্ড লিখুন।");
+loginBtn.disabled=true;
+try{
+await signInWithEmailAndPassword(auth,e,p);
+message("সফলভাবে লগইন হয়েছে।");
+}catch(error){message(errorMessage(error));}
+finally{loginBtn.disabled=false;}
+});
+
+logoutBtn.addEventListener("click",async()=>{
+try{
+await signOut(auth);
+message("আপনি লগআউট করেছেন।");
+}catch(error){message(errorMessage(error));}
+});
+
+onAuthStateChanged(auth,user=>{
+if(user){
+message("লগইন আছে: "+user.email);
+email.value=user.email||"";
+password.value="";
+email.disabled=true;
+password.style.display="none";
+loginBtn.style.display="none";
+registerBtn.style.display="none";
+logoutBtn.style.display="inline-block";
+}else{
+email.disabled=false;
+password.style.display="block";
+loginBtn.style.display="inline-block";
+registerBtn.style.display="inline-block";
+logoutBtn.style.display="none";
+}
+});
+</script>
+
+</body>
+</html>
