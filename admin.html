@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOX ARENA - Admin Panel</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090817;color:white;font-family:Arial,sans-serif;padding:18px}
+.wrap{max-width:650px;margin:auto}
+h1{color:#a78bfa;text-align:center}
+.card{background:#17152b;border:1px solid #39315d;border-radius:14px;padding:18px;margin:15px 0}
+input,select,textarea,button{width:100%;padding:13px;margin:7px 0;border-radius:8px;border:1px solid #49416c;background:#0e0c20;color:white;font-size:15px}
+button{background:#7048e8;border:0;font-weight:bold;cursor:pointer}
+button.secondary{background:#34304e}
+button.danger{background:#a83255}
+small{color:#b8b1d4}
+.hidden{display:none}
+.match{border:1px solid #49416c;padding:13px;border-radius:10px;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>👑 NOX ARENA</h1>
+<p style="text-align:center">ADMIN CONTROL PANEL</p>
+
+<div class="card" id="loginBox">
+<h3>Admin Login</h3>
+<input id="email" type="email" placeholder="Admin Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">LOGIN</button>
+<p id="loginMsg"></p>
+</div>
+
+<div id="panel" class="hidden">
+<div class="card">
+<h3 id="welcome">Welcome</h3>
+<p id="role"></p>
+<button class="secondary" onclick="logout()">LOGOUT</button>
+</div>
+
+<div class="card">
+<h3>➕ Tournament তৈরি / Edit</h3>
+<input id="docId" placeholder="Tournament ID (নতুন হলে খালি রাখুন)">
+<input id="title" placeholder="Tournament Name">
+<select id="category">
+<option>Free Tournament</option>
+<option>Paid Tournament</option>
+<option>Custom Match</option>
+<option>BR Rank</option>
+<option>CS Custom</option>
+<option>Lone Wolf</option>
+<option>1v1</option>
+<option>2v2</option>
+</select>
+<input id="entryFee" type="number" min="0" placeholder="Entry Fee">
+<input id="matchTime" placeholder="Match Date & Time">
+<select id="status">
+<option value="upcoming">Upcoming</option>
+<option value="live">Live</option>
+<option value="completed">Completed</option>
+</select>
+<input id="roomId" placeholder="Room ID (প্রকাশের সময় দিন)">
+<input id="roomPassword" placeholder="Room Password (প্রকাশের সময় দিন)">
+<textarea id="winners" placeholder="Winner details / ফলাফল"></textarea>
+<button onclick="saveMatch()">SAVE TOURNAMENT</button>
+<p id="saveMsg"></p>
+</div>
+
+<div class="card">
+<h3>🏆 Tournament List</h3>
+<div id="matches">Loading...</div>
+</div>
+</div>
+</div>
+
+<script type="module">
+import {initializeApp} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,collection,addDoc,setDoc,
+getDocs,serverTimestamp}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyDhAs-4klHl9vsp2PwrddIuJ9sjvt4Zk9w",
+ authDomain: "bd-nox-esports.firebaseapp.com",
+ projectId: "bd-nox-esports",
+ storageBucket: "bd-nox-esports.firebasestorage.app",
+ messagingSenderId: "166332333423",
+ appId: "1:166332333423:web:bfc9cbf77323d338b47c9a",
+ measurementId: "G-CP8JVKGD91"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+let currentRole=null;
+
+window.login=async()=>{
+ const msg=document.getElementById("loginMsg");
+ msg.textContent="Checking...";
+ try{
+ await signInWithEmailAndPassword(auth,
+ document.getElementById("email").value.trim(),
+ document.getElementById("password").value);
+ }catch(e){msg.textContent="Login failed: "+e.message}
+};
+
+onAuthStateChanged(auth,async user=>{
+ const loginBox=document.getElementById("loginBox");
+ const panel=document.getElementById("panel");
+ if(!user){
+ loginBox.classList.remove("hidden");
+ panel.classList.add("hidden");
+ return;
+ }
+ try{
+ const snap=await getDoc(doc(db,"admins",user.uid));
+ if(!snap.exists() || snap.data().active!==true ||
+ !["owner","admin"].includes(snap.data().role)){
+ await signOut(auth);
+ document.getElementById("loginMsg").textContent=
+ "আপনার Admin অনুমতি নেই।";
+ return;
+ }
+ currentRole=snap.data().role;
+ loginBox.classList.add("hidden");
+ panel.classList.remove("hidden");
+ document.getElementById("welcome").textContent=
+ "Welcome, "+(user.email||"Admin");
+ document.getElementById("role").textContent=
+ "Your role: "+currentRole;
+ loadMatches();
+ }catch(e){
+ document.getElementById("loginMsg").textContent=
+ "Permission error: "+e.message;
+ }
+});
+
+window.logout=()=>signOut(auth);
+
+window.saveMatch=async()=>{
+ const msg=document.getElementById("saveMsg");
+ const title=document.getElementById("title").value.trim();
+ const fee=Number(document.getElementById("entryFee").value);
+ if(!title){msg.textContent="Tournament Name দিন";return}
+ if(!Number.isFinite(fee)||fee<0){msg.textContent="Entry Fee ঠিক করুন";return}
+ const data={
+ title,
+ category:document.getElementById("category").value,
+ entryFee:fee,
+ matchTime:document.getElementById("matchTime").value.trim(),
+ status:document.getElementById("status").value,
+ roomId:document.getElementById("roomId").value.trim(),
+ roomPassword:document.getElementById("roomPassword").value.trim(),
+ winners:document.getElementById("winners").value.trim(),
+ updatedAt:serverTimestamp()
+ };
+ try{
+ const id=document.getElementById("docId").value.trim();
+ if(id){
+ await setDoc(doc(db,"tournaments",id),data,{merge:true});
+ }else{
+ data.createdAt=serverTimestamp();
+ await addDoc(collection(db,"tournaments"),data);
+ }
+ msg.textContent="Saved successfully!";
+ document.getElementById("docId").value="";
+ loadMatches();
+ }catch(e){msg.textContent="Save failed: "+e.message}
+};
+
+window.editMatch=(id,data)=>{
+ document.getElementById("docId").value=id;
+ document.getElementById("title").value=data.title||"";
+ document.getElementById("category").value=data.category||"Free Tournament";
+ document.getElementById("entryFee").value=data.entryFee??0;
+ document.getElementById("matchTime").value=data.matchTime||"";
+ document.getElementById("status").value=data.status||"upcoming";
+ document.getElementById("roomId").value=data.roomId||"";
+ document.getElementById("roomPassword").value=data.roomPassword||"";
+ document.getElementById("winners").value=data.winners||"";
+ window.scrollTo({top:0,behavior:"smooth"});
+};
+
+async function loadMatches(){
+ const box=document.getElementById("matches");
+ box.textContent="Loading...";
+ try{
+ const snap=await getDocs(collection(db,"tournaments"));
+ box.innerHTML="";
+ if(snap.empty){box.textContent="No tournaments yet.";return}
+ snap.forEach(item=>{
+ const d=item.data();
+ const div=document.createElement("div");
+ div.className="match";
+ const heading=document.createElement("b");
+ heading.textContent=d.title||"Untitled Tournament";
+ const info=document.createElement("p");
+ info.textContent=(d.category||"")+
+ " | Entry: ৳"+(d.entryFee??0)+" | "+(d.status||"");
+ const edit=document.createElement("button");
+ edit.textContent="EDIT";
+ edit.onclick=()=>editMatch(item.id,d);
+ div.append(heading,info,edit);
+ box.appendChild(div);
+ });
+ }catch(e){box.textContent="Load error: "+e.message}
+}
+</script>
+</body>
+</html>
