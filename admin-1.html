@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOX ARENA Admin</title>
+<style>
+:root{color-scheme:dark;--bg:#090909;--panel:#171717;--line:#303030;--red:#e32626;--muted:#aaa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+header{padding:22px 16px;background:linear-gradient(120deg,#210707,#111);border-bottom:1px solid var(--line)}
+h1{margin:0;color:#ff3939;letter-spacing:2px}header p{margin:6px 0 0;color:#ccc}
+main{max-width:900px;margin:auto;padding:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
+input,select,textarea,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #444;background:#0d0d0d;color:white;font-size:15px}
+button{background:var(--red);border:0;font-weight:bold;cursor:pointer}button.secondary{background:#333}
+nav{display:flex;flex-wrap:wrap;gap:8px}nav button{width:auto;flex:1;min-width:120px}
+.hidden{display:none}.muted{color:var(--muted);font-size:13px}.item{padding:12px;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:600px){.row{grid-template-columns:1fr}}
+.notice{background:#33240a;border:1px solid #75551a;padding:12px;border-radius:8px;color:#ffe3a1}
+</style>
+</head>
+<body>
+<header><h1>NOX ARENA</h1><p>ADMIN CONTROL PANEL</p></header>
+<main>
+<section id="login" class="panel">
+<h2>Admin Login</h2>
+<input id="email" type="email" placeholder="Admin email">
+<input id="password" type="password" placeholder="Password">
+<button id="loginBtn">Login</button>
+<p id="loginMsg" class="muted"></p>
+</section>
+<section id="app" class="hidden">
+<div class="panel">
+<strong id="welcome">Admin Dashboard</strong>
+<button class="secondary" id="logoutBtn">Logout</button>
+<nav>
+<button data-tab="tournaments">Tournaments</button>
+<button data-tab="rooms">Room Details</button>
+<button data-tab="players">Player List</button>
+<button data-tab="money">Money Requests</button>
+</nav>
+</div>
+<section id="tab-tournaments" class="panel">
+<h2>Create / Update Tournament</h2>
+<input id="tid" placeholder="Tournament ID (example: weekly_001)">
+<input id="title" placeholder="Tournament title">
+<select id="category">
+<option>Free Tournament</option><option>BR Rank</option><option>Custom Match</option>
+<option>1v1</option><option>2v2</option><option>4v4</option><option>Lone Wolf Custom</option><option>Headshot</option>
+</select>
+<div class="row"><input id="fee" type="number" min="0" placeholder="Entry fee (৳)"><input id="limit" type="number" min="1" placeholder="Player limit"></div>
+<input id="matchTime" placeholder="Match date/time (optional)">
+<select id="status"><option value="upcoming">Upcoming</option><option value="open">Registration Open</option><option value="closed">Closed</option><option value="completed">Completed</option></select>
+<textarea id="description" placeholder="Tournament details"></textarea>
+<button id="saveTournament">Save Tournament</button>
+<p id="tournamentMsg" class="muted"></p>
+<h3>Existing Tournaments</h3><div id="tournamentList"></div>
+</section>
+<section id="tab-rooms" class="panel hidden">
+<h2>Room Details</h2>
+<div class="notice">Room ID ও Password এখানে আলাদা collection-এ রাখা হবে। Firestore Security Rules সঠিকভাবে সেট না করা পর্যন্ত বাস্তব room password প্রকাশ করবেন না।</div>
+<input id="roomTid" placeholder="Tournament ID">
+<input id="roomId" placeholder="Room ID">
+<input id="roomPass" placeholder="Room Password">
+<label><input id="published" type="checkbox" style="width:auto"> Publish room details</label>
+<button id="saveRoom">Save Room Details</button><p id="roomMsg" class="muted"></p>
+</section>
+<section id="tab-players" class="panel hidden">
+<h2>Confirmed Player List</h2>
+<input id="playerTid" placeholder="Tournament ID">
+<button id="loadPlayers">Load Confirmed Players</button>
+<button class="secondary" id="exportPlayers">Download CSV</button>
+<div id="playersList"></div>
+</section>
+<section id="tab-money" class="panel hidden">
+<h2>Money Requests</h2>
+<div class="notice">এই সংস্করণে শুধু pending request-এর সংখ্যা দেখানো হবে। Deposit/withdraw approve বা reject এবং wallet balance পরিবর্তনের নিরাপদ backend এখনো তৈরি হয়নি।</div>
+<div id="moneyInfo"></div>
+</section>
+</section>
+<p class="muted">NOX ARENA • Admin panel starter build</p>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,collection,getDocs,query,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyDhAs-4klHl9vsp2PwrddIuJ9sjvt4Zk9w",authDomain:"bd-nox-esports.firebaseapp.com",projectId:"bd-nox-esports",storageBucket:"bd-nox-esports.firebasestorage.app",messagingSenderId:"166332333423",appId:"1:166332333423:web:bfc9cbf77323d338b47c9a",measurementId:"G-CP8JVKGD91"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+let role="",lastPlayers=[];
+const $=id=>document.getElementById(id);
+const msg=(id,s)=>$(id).textContent=s;
+onAuthStateChanged(auth,async user=>{
+ if(!user){$("login").classList.remove("hidden");$("app").classList.add("hidden");return}
+ try{const snap=await getDoc(doc(db,"admins",user.uid));if(!snap.exists()||snap.data().active!==true||!["owner","admin"].includes(snap.data().role)){await signOut(auth);msg("loginMsg","এই অ্যাকাউন্টে Admin access নেই।");return}
+ role=snap.data().role;$("login").classList.add("hidden");$("app").classList.remove("hidden");$("welcome").textContent="Signed in • "+role;document.querySelector('[data-tab="money"]').disabled=role!=="owner";loadTournaments();
+ }catch(e){msg("loginMsg","Access check failed: "+e.message)}
+});
+$("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);msg("loginMsg","")}catch(e){msg("loginMsg","Login failed: "+e.message)}};
+$("logoutBtn").onclick=()=>signOut(auth);
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll('[id^="tab-"]').forEach(s=>s.classList.add("hidden"));$("tab-"+b.dataset.tab).classList.remove("hidden");if(b.dataset.tab==="money")loadMoney()});
+$("saveTournament").onclick=async()=>{
+ const id=$("tid").value.trim();if(!id||!$("title").value.trim()){msg("tournamentMsg","Tournament ID এবং title দিন।");return}
+ try{await setDoc(doc(db,"tournaments",id),{title:$("title").value.trim(),category:$("category").value,entry_fee:Number($("fee").value||0),entryFee:Number($("fee").value||0),player_limit:Number($("limit").value||0),matchTime:$("matchTime").value.trim(),status:$("status").value,description:$("description").value.trim(),updated_at:serverTimestamp()},{merge:true});msg("tournamentMsg","Tournament saved.");loadTournaments()}catch(e){msg("tournamentMsg","Save failed: "+e.message)}
+};
+async function loadTournaments(){try{const s=await getDocs(collection(db,"tournaments"));$("tournamentList").innerHTML=s.docs.map(d=>`<div class="item"><b>${esc(d.data().title||d.id)}</b><br><span class="muted">${esc(d.id)} • ${esc(d.data().category||"")}</span></div>`).join("")||"No tournaments"}catch(e){$("tournamentList").textContent=e.message}}
+$("saveRoom").onclick=async()=>{const id=$("roomTid").value.trim();if(!id){msg("roomMsg","Tournament ID দিন।");return}try{await setDoc(doc(db,"match_rooms",id),{tournament_id:id,room_id:$("roomId").value.trim(),room_password:$("roomPass").value.trim(),published:$("published").checked,updated_at:serverTimestamp()},{merge:true});msg("roomMsg","Room details saved. Rules must restrict reads to confirmed players.")}catch(e){msg("roomMsg","Save failed: "+e.message)}};
+$("loadPlayers").onclick=async()=>{const id=$("playerTid").value.trim();if(!id)return;try{const q=query(collection(db,"tournament_entries"),where("tournament_id","==",id),where("status","==","confirmed"));const s=await getDocs(q);lastPlayers=s.docs.map(d=>({id:d.id,...d.data()}));$("playersList").innerHTML=lastPlayers.map(p=>`<div class="item">${esc(p.player_name||p.name||"Player")} • ${esc(p.uid||p.user_id||"")}</div>`).join("")||"No confirmed players"}catch(e){$("playersList").textContent=e.message}};
+$("exportPlayers").onclick=()=>{if(!lastPlayers.length)return alert("আগে confirmed player list load করুন");const cols=["Player Name","UID","Mobile","Tournament ID","Entry Fee","Status"];const rows=lastPlayers.map(p=>[p.player_name||p.name||"",p.uid||p.user_id||"",p.mobile||"",p.tournament_id||"",p.entry_fee??"",p.status||""]);const csv=[cols,...rows].map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(",")).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="nox-arena-confirmed-players.csv";a.click();URL.revokeObjectURL(a.href)};
+async function loadMoney(){if(role!=="owner")return;try{const [d,w]=await Promise.all([getDocs(query(collection(db,"deposits"),where("status","==","pending"))),getDocs(query(collection(db,"withdrawals"),where("status","==","pending")))]);$("moneyInfo").textContent=`Pending deposits: ${d.size} • Pending withdrawals: ${w.size}`}catch(e){$("moneyInfo").textContent=e.message}}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+</script>
+</body></html>
